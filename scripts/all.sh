@@ -1,9 +1,11 @@
 #!/bin/bash
 
-./replica_mono.sh
-./replica_rgbd.sh
+ShellScriptFolder=$(cd $(dirname "$0"); pwd)
 
-./tum_mono.sh
-./tum_rgbd.sh
+$ShellScriptFolder/replica_mono.sh
+$ShellScriptFolder/replica_rgbd.sh
 
-./euroc_stereo.sh
+$ShellScriptFolder/tum_mono.sh
+$ShellScriptFolder/tum_rgbd.sh
+
+$ShellScriptFolder/euroc_stereo.sh
