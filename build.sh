@@ -1,44 +1,51 @@
-# DBoW2
-cd ./ORB-SLAM3/Thirdparty/DBoW2
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release # add OpenCV_DIR definitions if needed, example:
-#cmake .. -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=/home/rapidlab/libs/opencv/lib/cmake/opencv4
-make -j
+#!/bin/bash
 
-cd ../../g2o
+set -x
+
+ShellScriptFolder=$(cd $(dirname "$0"); pwd)
+ORB_SLAM3_Dir=$ShellScriptFolder/ORB-SLAM3
+DBoW2_Dir=$ORB_SLAM3_Dir/Thirdparty/DBoW2
+g2o_Dir=$ORB_SLAM3_Dir/Thirdparty/g2o
+Sophus_Dir=$ORB_SLAM3_Dir/Thirdparty/Sophus
+OpenCV_Dir=$HOME/Installed/opencv-4.7.0/lib/cmake/opencv4
+Torch_Dir=$HOME/Installed/libtorch/share/cmake/Torch
+
+# DBoW2
+mkdir $DBoW2_Dir/build
+cd $DBoW2_Dir/build
+cmake $DBoW2_Dir \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DOpenCV_DIR=$OpenCV_Dir
+make -j
 
 # g2o
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+mkdir $g2o_Dir/build
+cd $g2o_Dir/build
+cmake $g2o_Dir -DCMAKE_BUILD_TYPE=Release
 make -j
 
-cd ../../Sophus
-
 # Sophus
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
+mkdir $Sophus_Dir/build
+cd $Sophus_Dir/build
+cmake $Sophus_Dir -DCMAKE_BUILD_TYPE=Release
 make -j
 
 # ORB_SLAM3
-cd ../../../Vocabulary
-echo "Uncompress vocabulary ..."
-tar -xf ORBvoc.txt.tar.gz
-cd ..
 
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release # add OpenCV_DIR definitions if needed, example:
-#cmake .. -DCMAKE_BUILD_TYPE=Release -DOpenCV_DIR=/home/rapidlab/libs/opencv/lib/cmake/opencv4
-make -j8
+tar -xf $ORB_SLAM3_Dir/Vocabulary/ORBvoc.txt.tar.gz -C $ORB_SLAM3_Dir/Vocabulary
+
+mkdir $ORB_SLAM3_Dir/build
+cd $ORB_SLAM3_Dir/build
+cmake $ORB_SLAM3_Dir \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DOpenCV_DIR=$OpenCV_Dir
+make -j
 
 # Photo-SLAM
 echo "Building Photo-SLAM ..."
-cd ../..
-mkdir build
-cd build
-cmake .. # add Torch_DIR and/or OpenCV_DIR definitions if needed, example:
-#cmake .. -DTorch_DIR=/home/rapidlab/libs/libtorch/share/cmake/Torch -DOpenCV_DIR=/home/rapidlab/libs/opencv/lib/cmake/opencv4
-make -j8
+mkdir $ShellScriptFolder/build
+cd $ShellScriptFolder/build
+cmake $ShellScriptFolder \
+    -DTorch_DIR=$Torch_Dir \
+    -DOpenCV_DIR=$OpenCV_Dir
+make -j

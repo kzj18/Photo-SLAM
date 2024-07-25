@@ -1,0 +1,4 @@
+name: Photo-SLAM
+dependencies:
+  - python=3.9
+  - cmake
